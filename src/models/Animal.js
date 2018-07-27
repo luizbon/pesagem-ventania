@@ -1,8 +1,10 @@
 import moment from "moment";
 import { formatBrazil } from "../constants";
+import { guid } from "../utils";
 
 export default class Animal {
-  constructor(registro, peso, data) {
+  constructor({ id, registro, peso, data }) {
+    this._id = id || guid();
     this.registro = registro;
     this.pesoFinal = peso;
     this.dataAtual = data;

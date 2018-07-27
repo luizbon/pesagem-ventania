@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import moment from "moment";
+import { Container, Row, Col } from "reactstrap";
 import Form from "./Form";
 import Table from "./Table";
 import { formatBrazil } from "./constants";
@@ -12,6 +13,13 @@ class App extends Component {
       animais: []
     };
     this.addAnimal = this.addAnimal.bind(this);
+    this.delete = this.delete.bind(this);
+  }
+
+  delete(id) {
+    this.setState({
+      animais: this.state.animais.filter(item => item._id !== id)
+    });
   }
 
   addAnimal(animal) {
@@ -43,19 +51,19 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container">
+      <Container>
         <h2>Controle de ganho de peso</h2>
-        <div className="row">
-          <div className="col-sm col-md-6">
+        <Row>
+          <Col sm="auto">
             <Form onSubmit={this.addAnimal} />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-sm">
-            <Table animais={this.state.animais} />
-          </div>
-        </div>
-      </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm>
+            <Table animais={this.state.animais} delete={this.delete} />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

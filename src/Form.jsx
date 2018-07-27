@@ -10,14 +10,14 @@ class InputForm extends React.Component {
     this.state = new FormClass();
 
     this.addAnimal = this.addAnimal.bind(this);
-    this.animalChange = this.animalChange.bind(this);
+    this.registroChange = this.registroChange.bind(this);
     this.pesoChange = this.pesoChange.bind(this);
     this.dataChange = this.dataChange.bind(this);
   }
 
-  animalChange(e) {
+  registroChange(e) {
     this.setState({
-      animal: e.target.value.toUpperCase()
+      registro: e.target.value.toUpperCase()
     });
   }
 
@@ -40,7 +40,7 @@ class InputForm extends React.Component {
 
     this.props.onSubmit(animal.toAnimal());
     this.setState(new FormClass());
-    ReactDOM.findDOMNode(this.animal).focus();
+    ReactDOM.findDOMNode(this.registro).focus();
   }
 
   render() {
@@ -53,14 +53,14 @@ class InputForm extends React.Component {
           <Input
             type="text"
             name="animal"
-            id="animal"
+            id="registro"
             placeholder="Animal"
             ref={input => {
-              this.animal = input;
+              this.registro = input;
             }}
             autoFocus
-            value={this.state.animal}
-            onChange={this.animalChange}
+            value={this.state.registro}
+            onChange={this.registroChange}
             required
           />
         </FormGroup>
