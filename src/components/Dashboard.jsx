@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import moment from "moment";
-import { Container, Row, Col } from "reactstrap";
+import { Row, Col } from "reactstrap";
 import Form from "./Form";
 import Table from "./Table";
-import { formatBrazil } from "./constants";
+import { formatBrazil } from "../shared/constants";
 
-class App extends Component {
+class Dashboard extends Component {
   constructor(props) {
     super(props);
 
@@ -51,9 +51,9 @@ class App extends Component {
 
   render() {
     return (
-      <Container>
+      <Fragment>
         <h2>Controle de ganho de peso</h2>
-        <Row>
+        {/* <Row>
           <Col sm="auto">
             <Form onSubmit={this.addAnimal} />
           </Col>
@@ -62,10 +62,10 @@ class App extends Component {
           <Col sm>
             <Table animais={this.state.animais} delete={this.delete} />
           </Col>
-        </Row>
-      </Container>
+        </Row> */}
+      </Fragment>
     );
   }
 }
 
-export default App;
+export default Dashboard;

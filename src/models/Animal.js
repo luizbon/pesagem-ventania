@@ -1,6 +1,6 @@
 import moment from "moment";
-import { formatBrazil } from "../constants";
-import { guid } from "../utils";
+import { formatBrazil } from "../shared/constants";
+import { guid } from "../shared/utils";
 
 export default class Animal {
   constructor({ id, registro, peso, data }) {

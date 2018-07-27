@@ -1,5 +1,5 @@
 import moment from "moment";
-import { formatBrazil } from "../constants";
+import { formatBrazil } from "../shared/constants";
 import { isEmpty, isNumeric } from "validator";
 import Animal from "./Animal";
 

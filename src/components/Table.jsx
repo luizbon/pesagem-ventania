@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { Table, Button } from "reactstrap";
-import { formatBrazil } from "./constants";
+import { formatBrazil } from "../shared/constants";
 
 export default class Animais extends React.Component {
   constructor(props) {
