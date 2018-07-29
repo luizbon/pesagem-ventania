@@ -18,16 +18,11 @@ class App extends Component {
             <Navbar />
             <Container>
               <FlashMessage />
-              <Route
-                exact
-                path="/"
-                component={() => <h1 className="content">Welcome, Home!</h1>}
-              />
               <Route exact path="/login" component={() => <Login />} />
               <Route exact path="/signup" component={() => <Signup />} />
               <Route
                 exact
-                path="/dashboard"
+                path="/"
                 component={() => (
                   <Consumer>
                     {({ state }) =>
@@ -35,8 +30,14 @@ class App extends Component {
                         <Dashboard user={state.currentUser} />
                       ) : (
                         <div className="content">
-                          <h1>Access denied.</h1>
-                          <p>You are not authorized to access this page.</p>
+                          <h1>Acesso negado.</h1>
+                          <p>
+                            Faça o <Link to="/login">login</Link> para
+                            continuar.
+                          </p>
+                          <p>
+                            Ou <Link to="/signup">crie uma conta</Link>
+                          </p>
                         </div>
                       )
                     }
@@ -46,17 +47,14 @@ class App extends Component {
               <Route
                 exact
                 path="/signedOut"
-                component={() => (
-                  <h1 className="content">You're now signed out.</h1>
-                )}
+                component={() => <h1 className="content">Log out efetuado.</h1>}
               />
               <Route
                 exact
                 path="/accountCreated"
                 component={() => (
                   <h1 className="content">
-                    Account created.{" "}
-                    <Link to="/login">Proceed to Dashboard</Link>
+                    Conta criada. <Link to="/login">Faça o login</Link>
                   </h1>
                 )}
               />

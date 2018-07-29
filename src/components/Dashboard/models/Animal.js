@@ -12,6 +12,24 @@ export default class Animal {
     this.dataAnterior = null;
   }
 
+  static NewAnimal({
+    _id,
+    registro,
+    pesoFinal,
+    dataAtual,
+    pesoInicial,
+    dataAnterior
+  }) {
+    const animal = new Animal({});
+    animal._id = _id;
+    animal.registro = registro;
+    animal.pesoFinal = pesoFinal;
+    animal.dataAtual = dataAtual;
+    animal.pesoInicial = pesoInicial;
+    animal.dataAnterior = dataAnterior || null;
+    return animal;
+  }
+
   get dias() {
     if (this.dataAnterior === null) return null;
     return moment(this.dataAtual, formatDatabase).diff(

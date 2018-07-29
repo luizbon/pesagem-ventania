@@ -2,6 +2,7 @@ import React from "react";
 import moment from "moment";
 import { Table, Button } from "reactstrap";
 import { formatDisplay, formatDatabase } from "../../shared/constants";
+import Animal from "./models/Animal";
 
 export default class Animais extends React.Component {
   constructor(props) {
@@ -48,15 +49,17 @@ export default class Animais extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {animais.map((animal, index) => {
+          {animais.map((item, index) => {
+            const animal = Animal.NewAnimal(item);
             return (
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{animal.registro}</td>
                 <td>
-                  {moment(animal.dataAnterior, formatDatabase).format(
-                    formatDisplay
-                  )}
+                  {animal.dataAnterior &&
+                    moment(animal.dataAnterior, formatDatabase).format(
+                      formatDisplay
+                    )}
                 </td>
                 <td>
                   {moment(animal.dataAtual, formatDatabase).format(

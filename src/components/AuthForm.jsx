@@ -72,7 +72,7 @@ class AuthForm extends Component {
 
             <FormGroup>
               <Label for="password" className="mr-sm-2">
-                Password
+                Senha
               </Label>
               <Input
                 type="password"
@@ -84,7 +84,7 @@ class AuthForm extends Component {
                 autoComplete="none"
               />
             </FormGroup>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Enviar</Button>
           </Form>
         </Col>
       </Row>

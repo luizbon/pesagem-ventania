@@ -38,13 +38,11 @@ class Navbar extends React.Component {
               <Bootstrap.Collapse isOpen={this.state.isOpen} navbar>
                 <Bootstrap.Nav className="ml-auto" navbar>
                   <Bootstrap.NavItem>
-                    <Bootstrap.NavLink href="/dashboard">
-                      Dashboard
-                    </Bootstrap.NavLink>
+                    <Bootstrap.NavLink href="/">Pesagem</Bootstrap.NavLink>
                   </Bootstrap.NavItem>
                   <Bootstrap.NavItem>
                     <Bootstrap.NavLink onClick={() => handleLogout(context)}>
-                      Logout
+                      Sair
                     </Bootstrap.NavLink>
                   </Bootstrap.NavItem>
                 </Bootstrap.Nav>
@@ -53,14 +51,14 @@ class Navbar extends React.Component {
               <Bootstrap.Collapse isOpen={this.state.isOpen} navbar>
                 <Bootstrap.Nav className="ml-auto" navbar>
                   <Bootstrap.NavItem>
-                    <Bootstrap.NavLink href="/">Home</Bootstrap.NavLink>
+                    <Bootstrap.NavLink href="/">Pesagem</Bootstrap.NavLink>
                   </Bootstrap.NavItem>
                   <Bootstrap.NavItem>
-                    <Bootstrap.NavLink href="/login">Login</Bootstrap.NavLink>
+                    <Bootstrap.NavLink href="/login">Entrar</Bootstrap.NavLink>
                   </Bootstrap.NavItem>
                   <Bootstrap.NavItem>
                     <Bootstrap.NavLink href="/signup">
-                      Create Account
+                      Criar conta
                     </Bootstrap.NavLink>
                   </Bootstrap.NavItem>
                 </Bootstrap.Nav>
