@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
-import FormClass from "../models/FormClass";
+import FormClass from "./models/FormClass";
 
 class InputForm extends React.Component {
   constructor(props) {

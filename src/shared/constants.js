@@ -1,1 +1,2 @@
-export const formatBrazil = "DD/MM/YYYY";
+export const formatDisplay = "DD/MM/YYYY";
+export const formatDatabase = "YYYYMMDD";

@@ -3,15 +3,28 @@ import moment from "moment";
 import { Row, Col } from "reactstrap";
 import Form from "./Form";
 import Table from "./Table";
-import { formatBrazil } from "../shared/constants";
+import { formatDatabase } from "../../shared/constants";
+import { database } from "../../firebase";
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
 
+    database.base.syncState(`animais/${props.user.uid}`, {
+      context: this,
+      state: "animais",
+      asArray: true,
+      defaultValue: [],
+      then() {
+        this.setState({ loading: false });
+      }
+    });
+
     this.state = {
-      animais: []
+      animais: [],
+      loading: true
     };
+
     this.addAnimal = this.addAnimal.bind(this);
     this.delete = this.delete.bind(this);
   }
@@ -27,8 +40,8 @@ class Dashboard extends Component {
     animais.push(animal);
     animais.sort((a, b) => {
       if (a.registro === b.registro) {
-        return moment(a.dataAtual, formatBrazil).isBefore(
-          moment(b.dataAtual, formatBrazil)
+        return moment(a.dataAtual, formatDatabase).isBefore(
+          moment(b.dataAtual, formatDatabase)
         );
       }
       return a.registro > b.registro;
@@ -53,16 +66,20 @@ class Dashboard extends Component {
     return (
       <Fragment>
         <h2>Controle de ganho de peso</h2>
-        {/* <Row>
+        <Row>
           <Col sm="auto">
             <Form onSubmit={this.addAnimal} />
           </Col>
         </Row>
         <Row>
           <Col sm>
-            <Table animais={this.state.animais} delete={this.delete} />
+            {this.state.loading === true ? (
+              <h3> CARREGANDO... </h3>
+            ) : (
+              <Table animais={this.state.animais} delete={this.delete} />
+            )}
           </Col>
-        </Row> */}
+        </Row>
       </Fragment>
     );
   }

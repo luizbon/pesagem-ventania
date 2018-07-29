@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { Table, Button } from "reactstrap";
-import { formatBrazil } from "../shared/constants";
+import { formatDisplay, formatDatabase } from "../../shared/constants";
 
 export default class Animais extends React.Component {
   constructor(props) {
@@ -53,9 +53,15 @@ export default class Animais extends React.Component {
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{animal.registro}</td>
-                <td>{animal.dataAnterior}</td>
                 <td>
-                  {moment(animal.dataAtual, formatBrazil).format(formatBrazil)}
+                  {moment(animal.dataAnterior, formatDatabase).format(
+                    formatDisplay
+                  )}
+                </td>
+                <td>
+                  {moment(animal.dataAtual, formatDatabase).format(
+                    formatDisplay
+                  )}
                 </td>
                 <td>{animal.dias}</td>
                 <td>{animal.pesoInicial}</td>

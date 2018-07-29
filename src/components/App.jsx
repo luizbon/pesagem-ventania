@@ -25,14 +25,14 @@ class App extends Component {
               />
               <Route exact path="/login" component={() => <Login />} />
               <Route exact path="/signup" component={() => <Signup />} />
-              <Router
+              <Route
                 exact
                 path="/dashboard"
                 component={() => (
                   <Consumer>
                     {({ state }) =>
                       state.currentUser ? (
-                        <h1>Test</h1>
+                        <Dashboard user={state.currentUser} />
                       ) : (
                         <div className="content">
                           <h1>Access denied.</h1>
