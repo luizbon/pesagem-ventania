@@ -7,82 +7,84 @@ import { formatDatabase } from "../../shared/constants";
 import { database } from "../../firebase";
 
 class Dashboard extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    database.base.syncState(`animais/${props.user.uid}`, {
-      context: this,
-      state: "animais",
-      asArray: true,
-      defaultValue: [],
-      then() {
-        this.setState({ loading: false });
-      }
-    });
+        database.base.syncState(`animais/${props.user.uid}`, {
+            context: this,
+            state: "animais",
+            asArray: true,
+            defaultValue: [],
+            then() {
+                this.setState({ loading: false });
+            }
+        });
 
-    this.state = {
-      animais: [],
-      loading: true
-    };
+        this.state = {
+            animais: [],
+            loading: true
+        };
 
-    this.addAnimal = this.addAnimal.bind(this);
-    this.delete = this.delete.bind(this);
-  }
-
-  delete(id) {
-    this.setState({
-      animais: this.state.animais.filter(item => item._id !== id)
-    });
-  }
-
-  addAnimal(animal) {
-    const animais = this.state.animais;
-    animais.push(animal);
-    animais.sort((a, b) => {
-      if (a.registro === b.registro) {
-        return moment(a.dataAtual, formatDatabase).isBefore(
-          moment(b.dataAtual, formatDatabase)
-        );
-      }
-      return a.registro > b.registro;
-    });
-    const filteredAnimais = animais.filter(
-      item => item.registro === animal.registro
-    );
-    for (var i = 1; i < filteredAnimais.length; i++) {
-      const previous = filteredAnimais[i - 1];
-      const current = filteredAnimais[i];
-      if (current) {
-        previous.pesoInicial = current.pesoFinal;
-        previous.dataAnterior = current.dataAtual;
-      }
+        this.addAnimal = this.addAnimal.bind(this);
+        this.delete = this.delete.bind(this);
     }
-    this.setState({
-      animais
-    });
-  }
 
-  render() {
-    return (
-      <Fragment>
-        <h2>Controle de ganho de peso</h2>
-        <Row>
-          <Col sm="auto">
-            <Form onSubmit={this.addAnimal} />
-          </Col>
-        </Row>
-        <Row>
-          <Col sm>
-            {this.state.loading === true ? (
-              <h3> CARREGANDO... </h3>
-            ) : (
-              <Table animais={this.state.animais} delete={this.delete} />
-            )}
-          </Col>
-        </Row>
-      </Fragment>
-    );
-  }
+    delete(id) {
+        this.setState({
+            animais: this.state.animais.filter(item => item._id !== id)
+        });
+    }
+
+    addAnimal(animal) {
+        const animais = this.state.animais;
+        const currentAnimal = animais.find(
+            item => item.registro === animal.registro
+        );
+        if (currentAnimal !== undefined) {
+            currentAnimal.dataAnterior = currentAnimal.dataAtual;
+            currentAnimal.pesoInicial = currentAnimal.pesoFinal;
+            currentAnimal.dataAtual = animal.dataAtual;
+            currentAnimal.pesoFinal = animal.pesoFinal;
+        } else {
+            animais.push(animal);
+        }
+        animais.sort((a, b) => {
+            if (a.registro === b.registro) {
+                return moment(a.dataAtual, formatDatabase).isBefore(
+                    moment(b.dataAtual, formatDatabase)
+                );
+            }
+            return a.registro > b.registro;
+        });
+        this.setState({
+            animais
+        });
+    }
+
+    render() {
+        return (
+            <Fragment>
+                <h2>Controle de ganho de peso</h2>
+                <Row className="d-print-none">
+                    <Col sm="auto">
+                        <Form onSubmit={this.addAnimal} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm>
+                        {this.state.loading === true ? (
+                            <h3> CARREGANDO... </h3>
+                        ) : (
+                            <Table
+                                animais={this.state.animais}
+                                delete={this.delete}
+                            />
+                        )}
+                    </Col>
+                </Row>
+            </Fragment>
+        );
+    }
 }
 
 export default Dashboard;
