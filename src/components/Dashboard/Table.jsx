@@ -22,9 +22,6 @@ export default class Animais extends React.Component {
                 <thead>
                     <tr>
                         <th rowSpan="2" className="align-middle text-center">
-                            No
-                        </th>
-                        <th rowSpan="2" className="align-middle text-center">
                             Animal
                         </th>
                         <th colSpan="2" className="text-center">
@@ -35,6 +32,12 @@ export default class Animais extends React.Component {
                         </th>
                         <th colSpan="2" className="text-center">
                             Pesagem (Kg)
+                        </th>
+                        <th
+                            rowSpan="2"
+                            className="d-none d-print-table-cell align-middle text-center"
+                        >
+                            Pesagem Curral
                         </th>
                         <th rowSpan="2" className="align-middle text-center">
                             GPD
@@ -53,7 +56,6 @@ export default class Animais extends React.Component {
                         const animal = Animal.NewAnimal(item);
                         return (
                             <tr key={index}>
-                                <td>{index + 1}</td>
                                 <td>{animal.registro}</td>
                                 <td>
                                     {animal.dataAnterior &&
@@ -71,8 +73,9 @@ export default class Animais extends React.Component {
                                 <td>{animal.dias}</td>
                                 <td>{animal.pesoInicial}</td>
                                 <td>{animal.pesoFinal}</td>
+                                <td className="d-none d-print-table-cell" />
                                 <td>{animal.gdp}</td>
-                                <td className="d-print-none">
+                                <td className="d-print-none text-center">
                                     <Button
                                         size="sm"
                                         color="danger"

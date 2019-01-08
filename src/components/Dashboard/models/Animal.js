@@ -41,7 +41,8 @@ export default class Animal {
     get gdp() {
         if (this.dataAnterior === null) return null;
         return parseInt(
-            ((this.pesoFinal - this.pesoInicial) / this.dias) * 1000
+            ((this.pesoFinal - this.pesoInicial) / this.dias) * 1000,
+            10
         );
     }
 }
