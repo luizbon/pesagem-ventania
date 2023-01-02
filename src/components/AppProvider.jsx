@@ -1,5 +1,6 @@
 import React, { Component, createContext } from "react";
 import { firebase } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 export const { Provider, Consumer } = createContext();
 
 class AppProvider extends Component {
@@ -9,13 +10,17 @@ class AppProvider extends Component {
   };
 
   componentDidMount() {
-    firebase.auth.onAuthStateChanged(
-      user =>
-        user &&
+    onAuthStateChanged(firebase.auth, (user) => {
+      if (user) {
         this.setState({
           currentUser: user
         })
-    );
+      } else {
+        this.setState({
+          currentUser: null
+        })
+      }
+    });
   }
 
   render() {

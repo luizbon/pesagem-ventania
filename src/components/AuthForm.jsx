@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Form, Button, FormGroup, Label, Input, Row, Col } from "reactstrap";
-import { auth } from "../firebase";
+import { firebase } from "../firebase";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 class AuthForm extends Component {
   constructor(props) {
@@ -31,10 +32,14 @@ class AuthForm extends Component {
       props: { action }
     } = this;
 
-    auth
-      .userSession(action, email, password)
-      .then(this.handleSuccess)
-      .catch(this.handleErrors);
+    if (action == "signIn") {
+      signInWithEmailAndPassword(firebase.auth, email, password);
+    } else {
+      signOut(firebase.auth)
+        .then(this.handleSuccess)
+        .catch(this.handleErrors);
+    }
+
   }
 
   resetForm() {
