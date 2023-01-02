@@ -6,6 +6,15 @@ import Table from "./Table";
 import { formatDatabase } from "../../shared/constants";
 import { database } from "../../firebase";
 
+const sortAnimais = (a, b) => {
+    if (a.registro === b.registro) {
+        return moment(a.dataAtual, formatDatabase).isBefore(
+            moment(b.dataAtual, formatDatabase)
+        ) ? -1 : 1;
+    }
+    return a.registro > b.registro ? 1 : -1;
+};
+
 class Dashboard extends Component {
     constructor(props) {
         super(props);
@@ -16,7 +25,11 @@ class Dashboard extends Component {
             asArray: true,
             defaultValue: [],
             then() {
-                this.setState({ loading: false });
+                var animais = this.state.animais.sort(sortAnimais);
+                this.setState({
+                    loading: false,
+                    animais: animais
+                });
             }
         });
 
@@ -48,14 +61,7 @@ class Dashboard extends Component {
         } else {
             animais.push(animal);
         }
-        animais.sort((a, b) => {
-            if (a.registro === b.registro) {
-                return moment(a.dataAtual, formatDatabase).isBefore(
-                    moment(b.dataAtual, formatDatabase)
-                );
-            }
-            return a.registro > b.registro;
-        });
+        animais.sort(sortAnimais);
         this.setState({
             animais
         });
