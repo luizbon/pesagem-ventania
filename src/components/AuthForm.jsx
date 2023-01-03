@@ -1,95 +1,84 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Form, Button, FormGroup, Label, Input, Row, Col } from "reactstrap";
-import { auth } from "../firebase";
+import { firebase } from "../firebase";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
-class AuthForm extends Component {
-  constructor(props) {
-    super(props);
+const AuthForm = (props) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState("");
 
-    this.state = { ...AuthForm.defaultProps };
-
-    this.handleSuccess = this.handleSuccess.bind(this);
-    this.handleErrors = this.handleErrors.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+  const handleSuccess = () => {
+    resetForm();
+    props.onSuccess && props.onSuccess();
   }
 
-  handleSuccess() {
-    this.resetForm();
-    this.props.onSuccess && this.props.onSuccess();
+  const handleErrors = (reason) => {
+    props.onError && props.onError(reason);
   }
 
-  handleErrors(reason) {
-    this.props.onError && this.props.onError(reason);
-  }
-
-  handleSubmit(event) {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const {
-      state: { email, password },
-      props: { action }
-    } = this;
 
-    auth
-      .userSession(action, email, password)
-      .then(this.handleSuccess)
-      .catch(this.handleErrors);
+    if (props.action == "signIn") {
+      signInWithEmailAndPassword(firebase.auth, email, password)
+        .then(handleSuccess)
+        .catch(handleErrors);
+    } else {
+      signOut(firebase.auth)
+        .then(handleSuccess)
+        .catch(handleErrors);
+    }
+
   }
 
-  resetForm() {
-    this.setState({ ...AuthForm.defaultProps });
+  const resetForm = () => {
+    setEmail("");
+    setPassword("");
+    setErrors("");
   }
 
-  handleChange(e) {
-    const { value, name } = e.target;
 
-    this.setState({
-      [name]: value
-    });
-  }
+  return (
+    <Row>
+      <Col md="auto">
+        <Form onSubmit={handleSubmit}>
+          <h1>{props.title}</h1>
 
-  render() {
-    return (
-      <Row>
-        <Col md="auto">
-          <Form onSubmit={this.handleSubmit}>
-            <h1>{this.props.title}</h1>
+          <FormGroup>
+            <Label for="email" className="mr-sm-2">
+              Email
+            </Label>
+            <Input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+          </FormGroup>
 
-            <FormGroup>
-              <Label for="email" className="mr-sm-2">
-                Email
-              </Label>
-              <Input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Email"
-                value={this.state.email}
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label for="password" className="mr-sm-2">
-                Senha
-              </Label>
-              <Input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="password"
-                value={this.state.password}
-                onChange={this.handleChange}
-                autoComplete="none"
-              />
-            </FormGroup>
-            <Button type="submit">Enviar</Button>
-          </Form>
-        </Col>
-      </Row>
-    );
-  }
+          <FormGroup>
+            <Label for="password" className="mr-sm-2">
+              Senha
+            </Label>
+            <Input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              autoComplete="none"
+            />
+          </FormGroup>
+          <Button type="submit">Enviar</Button>
+        </Form>
+      </Col>
+    </Row>
+  );
 }
 
 AuthForm.propTypes = {
@@ -97,12 +86,6 @@ AuthForm.propTypes = {
   action: PropTypes.string.isRequired,
   onSuccess: PropTypes.func,
   onError: PropTypes.func
-};
-
-AuthForm.defaultProps = {
-  errors: "",
-  email: "",
-  password: ""
 };
 
 export default AuthForm;

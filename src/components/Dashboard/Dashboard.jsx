@@ -4,7 +4,8 @@ import { Row, Col } from "reactstrap";
 import Form from "./Form";
 import Table from "./Table";
 import { formatDatabase } from "../../shared/constants";
-import { database } from "../../firebase";
+import { firebase } from "../../firebase";
+import { ref, onValue, set } from "firebase/database";
 
 const sortAnimais = (a, b) => {
     if (a.registro === b.registro) {
@@ -19,18 +20,13 @@ class Dashboard extends Component {
     constructor(props) {
         super(props);
 
-        database.base.syncState(`animais/${props.user.uid}`, {
-            context: this,
-            state: "animais",
-            asArray: true,
-            defaultValue: [],
-            then() {
-                var animais = this.state.animais.sort(sortAnimais);
-                this.setState({
-                    loading: false,
-                    animais: animais
-                });
-            }
+        this.animaisRef = ref(firebase.database, `animais/${props.user.uid}`);
+        onValue(this.animaisRef, (snapshot) => {
+            const data = snapshot.val().sort(sortAnimais);
+            this.setState({
+                loading: false,
+                animais: data
+            });
         });
 
         this.state = {
@@ -43,9 +39,8 @@ class Dashboard extends Component {
     }
 
     delete(id) {
-        this.setState({
-            animais: this.state.animais.filter(item => item._id !== id)
-        });
+        const animais = this.state.animais.filter(item => item._id !== id);
+        set(this.animaisRef, animais);
     }
 
     addAnimal(animal) {
@@ -61,10 +56,7 @@ class Dashboard extends Component {
         } else {
             animais.push(animal);
         }
-        animais.sort(sortAnimais);
-        this.setState({
-            animais
-        });
+        set(this.animaisRef, animais);
     }
 
     render() {
