@@ -1,74 +1,62 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
-import * as Bootstrap from "reactstrap";
+import React, { useState } from "react";
+import { useNavigate, NavLink as RRNavLink } from "react-router-dom";
+import { Navbar as BNavBar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, NavLink } from "reactstrap";
 import { auth } from "../firebase";
 import { Consumer } from "./AppProvider";
 
-class Navbar extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isOpen: false
-    };
-
-    this.toggle = this.toggle.bind(this);
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const toggle = () => {
+    setIsOpen(!isOpen);
   }
 
-  toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  }
+  const handleLogout = context => {
+    auth.logout();
+    context.destroySession();
+    navigate("/signedOut")
+  };
 
-  render() {
-    const handleLogout = context => {
-      auth.logout();
-      context.destroySession();
-      this.props.history.push("/signedOut");
-    };
-
-    return (
-      <Bootstrap.Navbar color="light" light expand="md" className="mb-2">
-        <Bootstrap.NavbarBrand href="/">Fazenda Ventania</Bootstrap.NavbarBrand>
-        <Bootstrap.NavbarToggler onClick={this.toggle} />
-        <Consumer>
-          {({ state, ...context }) =>
-            state.currentUser ? (
-              <Bootstrap.Collapse isOpen={this.state.isOpen} navbar>
-                <Bootstrap.Nav className="ml-auto" navbar>
-                  <Bootstrap.NavItem>
-                    <Bootstrap.NavLink href="/">Pesagem</Bootstrap.NavLink>
-                  </Bootstrap.NavItem>
-                  <Bootstrap.NavItem>
-                    <Bootstrap.NavLink onClick={() => handleLogout(context)}>
-                      Sair
-                    </Bootstrap.NavLink>
-                  </Bootstrap.NavItem>
-                </Bootstrap.Nav>
-              </Bootstrap.Collapse>
-            ) : (
-              <Bootstrap.Collapse isOpen={this.state.isOpen} navbar>
-                <Bootstrap.Nav className="ml-auto" navbar>
-                  <Bootstrap.NavItem>
-                    <Bootstrap.NavLink href="/">Pesagem</Bootstrap.NavLink>
-                  </Bootstrap.NavItem>
-                  <Bootstrap.NavItem>
-                    <Bootstrap.NavLink href="/login">Entrar</Bootstrap.NavLink>
-                  </Bootstrap.NavItem>
-                  <Bootstrap.NavItem>
-                    <Bootstrap.NavLink href="/signup">
-                      Criar conta
-                    </Bootstrap.NavLink>
-                  </Bootstrap.NavItem>
-                </Bootstrap.Nav>
-              </Bootstrap.Collapse>
-            )
-          }
-        </Consumer>
-      </Bootstrap.Navbar>
-    );
-  }
+  return (
+    <BNavBar color="light" light expand="md" className="mb-2">
+      <NavbarBrand to="/">Fazenda Ventania</NavbarBrand>
+      <NavbarToggler onClick={toggle} />
+      <Consumer>
+        {({ state, ...context }) =>
+          state.currentUser ? (
+            <Collapse isOpen={isOpen} navbar>
+              <Nav className="ml-auto" navbar>
+                <NavItem>
+                  <NavLink to="/" tag={RRNavLink}>Pesagem</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink href="#" onClick={() => handleLogout(context)}>
+                    Sair
+                  </NavLink>
+                </NavItem>
+              </Nav>
+            </Collapse>
+          ) : (
+            <Collapse isOpen={isOpen} navbar>
+              <Nav className="ml-auto" navbar>
+                <NavItem>
+                  <NavLink to="/" tag={RRNavLink}>Pesagem</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink to="/login" tag={RRNavLink}>Entrar</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink to="/signup" tag={RRNavLink}>
+                    Criar conta
+                  </NavLink>
+                </NavItem>
+              </Nav>
+            </Collapse>
+          )
+        }
+      </Consumer>
+    </BNavBar>
+  );
 }
 
-export default withRouter(Navbar);
+export default Navbar;
