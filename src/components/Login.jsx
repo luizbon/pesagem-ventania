@@ -1,12 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "./AuthForm";
-import { Consumer } from "./AppProvider";
+import { AppContext } from "./AppProvider";
 
 const Login = () => {
   const navigate = useNavigate();
   return (
-    <Consumer>
+    <AppContext.Consumer>
       {({ state, ...context }) => (
         <Form
           action="signIn"
@@ -17,7 +17,7 @@ const Login = () => {
           }
         />
       )}
-    </Consumer>
+    </AppContext.Consumer>
   )
 };
 

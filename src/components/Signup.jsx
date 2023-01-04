@@ -2,12 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "./AuthForm";
 import { auth } from "../firebase";
-import { Consumer } from "./AppProvider";
+import { AppContext } from "./AppProvider";
 
 const Signup = () => {
   const navigate = useNavigate();
   return (
-    <Consumer>
+    <AppContext.Consumer>
       {({ state, ...context }) => (
         <Form
           action="createUser"
@@ -24,7 +24,7 @@ const Signup = () => {
           }
         />
       )}
-    </Consumer>
+    </AppContext.Consumer>
   )
 };
 
