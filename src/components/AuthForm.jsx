@@ -30,7 +30,6 @@ const AuthForm = (props) => {
         .then(handleSuccess)
         .catch(handleErrors);
     }
-
   }
 
   const resetForm = () => {
@@ -38,7 +37,6 @@ const AuthForm = (props) => {
     setPassword("");
     setErrors("");
   }
-
 
   return (
     <Row>

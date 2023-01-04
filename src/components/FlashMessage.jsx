@@ -1,9 +1,9 @@
 import React from "react";
 import { Alert } from "reactstrap";
-import { Consumer } from "./AppProvider";
+import { AppContext } from "./AppProvider";
 
 const FlashMessage = () => (
-  <Consumer>
+  <AppContext.Consumer>
     {({ state, ...context }) =>
       state.message && (
         <Alert color="warning" toggle={context.clearMessage}>
@@ -11,7 +11,7 @@ const FlashMessage = () => (
         </Alert>
       )
     }
-  </Consumer>
+  </AppContext.Consumer>
 );
 
 export default FlashMessage;

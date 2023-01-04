@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import { Container } from "reactstrap";
-import AppProvider, { Consumer } from "./AppProvider";
+import { Container, List } from "reactstrap";
+import AppProvider, { AppContext } from "./AppProvider";
 import Login from "./Login";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
@@ -24,10 +24,17 @@ const App = () => {
                 exact
                 path="/"
                 element={(
-                  <Consumer>
-                    {({ state }) =>
-                      state.currentUser ? (
-                        <Dashboard user={state.currentUser} />
+                  <AppContext.Consumer>
+                    {({ state, ...context }) =>
+                      state.currentGroup ? (
+                        <Dashboard group={state.currentGroup} />
+                      ) : state.currentUser ? (
+                        <div className="content">
+                          <h1>Selecione um grupo</h1>
+                          <List>
+                            {state.groups.map(group => (<li key={group.key} onClick={(e) => { e.preventDefault(); context.setGroup(group) }}><a href="#">{group.name}</a></li>))}
+                          </List>
+                        </div>
                       ) : (
                         <div className="content">
                           <h1>Acesso negado.</h1>
@@ -41,7 +48,7 @@ const App = () => {
                         </div>
                       )
                     }
-                  </Consumer>
+                  </AppContext.Consumer>
                 )}
               />
               <Route
