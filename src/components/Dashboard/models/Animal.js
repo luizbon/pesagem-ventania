@@ -1,10 +1,8 @@
-import moment from "moment";
-import { formatDatabase } from "../../../shared/constants";
-import { guid } from "../../../shared/utils";
+import { calculaDias, calculaGPD } from "../../../shared/utils";
 
 export default class Animal {
-    constructor({ id, registro, peso, data }) {
-        this._id = id || guid();
+    constructor({ key, registro, peso, data }) {
+        this.key = key;
         this.registro = registro;
         this.pesoFinal = peso;
         this.dataAtual = data;
@@ -13,7 +11,7 @@ export default class Animal {
     }
 
     static NewAnimal({
-        _id,
+        key,
         registro,
         pesoFinal,
         dataAtual,
@@ -21,7 +19,7 @@ export default class Animal {
         dataAnterior
     }) {
         const animal = new Animal({});
-        animal._id = _id;
+        animal.key = key;
         animal.registro = registro;
         animal.pesoFinal = pesoFinal;
         animal.dataAtual = dataAtual;
@@ -31,18 +29,10 @@ export default class Animal {
     }
 
     get dias() {
-        if (this.dataAnterior === null) return null;
-        return moment(this.dataAtual, formatDatabase).diff(
-            moment(this.dataAnterior, formatDatabase),
-            "days"
-        );
+        return calculaDias(this.dataAnterior, this.dataAtual);
     }
 
     get gdp() {
-        if (this.dataAnterior === null) return null;
-        return parseInt(
-            ((this.pesoFinal - this.pesoInicial) / this.dias) * 1000,
-            10
-        );
+        return calculaGPD(this.pesoInicial, this.pesoFinal, this.dataAnterior, this.dataAtual);
     }
 }
