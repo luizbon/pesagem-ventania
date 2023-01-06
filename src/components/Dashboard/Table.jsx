@@ -1,24 +1,34 @@
-import React from "react";
+import React, { Fragment, useState } from "react";
 import moment from "moment";
 import { Table, Button } from "reactstrap";
 import { formatDisplay, formatDatabase } from "../../shared/constants";
 import Animal from "./models/Animal";
+import HistoryModal from "./HistoryModal";
 
-export default class Animais extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.deleteAnimal = this.deleteAnimal.bind(this);
+const Animais = (props) => {
+    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+    const [historyKey, setHistoryKey] = useState(null);
+    const [historyRegistro, setHistoryRegistro] = useState(null);
+    const deleteAnimal = (key) => {
+        props.delete(key);
     }
 
-    deleteAnimal(id) {
-        this.props.delete(id);
+    const showHistory = (key, registro) => {
+        setHistoryKey(key);
+        setHistoryRegistro(registro);
+        setIsHistoryOpen(true);
     }
 
-    render() {
-        const { animais } = this.props;
-        return (
-            <Table responsive bordered>
+    const historyToggle = () => {
+        setHistoryKey(null);
+        setHistoryRegistro(null);
+        setIsHistoryOpen(!isHistoryOpen);
+    }
+
+    const { animais } = props;
+    return (
+        <Fragment>
+            <Table responsive bordered className="align-middle text-center">
                 <thead>
                     <tr>
                         <th rowSpan="2" className="align-middle text-center">
@@ -52,11 +62,11 @@ export default class Animais extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {animais.map((item, index) => {
+                    {animais.map((item) => {
                         const animal = Animal.NewAnimal(item);
                         return (
-                            <tr key={index}>
-                                <td>{animal.registro}</td>
+                            <tr key={animal.key}>
+                                <td><Button color="link" block onClick={() => showHistory(animal.key, animal.registro)}>{animal.registro}</Button></td>
                                 <td>
                                     {animal.dataAnterior &&
                                         moment(
@@ -75,12 +85,13 @@ export default class Animais extends React.Component {
                                 <td>{animal.pesoFinal}</td>
                                 <td className="d-none d-print-table-cell" />
                                 <td>{animal.gdp}</td>
-                                <td className="d-print-none text-center">
+                                <td className="d-print-none">
                                     <Button
                                         size="sm"
                                         color="danger"
+                                        block
                                         onClick={() =>
-                                            this.deleteAnimal(animal._id)
+                                            deleteAnimal(animal.key)
                                         }
                                     >
                                         Apagar
@@ -91,6 +102,9 @@ export default class Animais extends React.Component {
                     })}
                 </tbody>
             </Table>
-        );
-    }
+            <HistoryModal isOpen={isHistoryOpen} toggle={historyToggle} animalKey={historyKey} registro={historyRegistro} />
+        </Fragment>
+    );
 }
+
+export default Animais;
