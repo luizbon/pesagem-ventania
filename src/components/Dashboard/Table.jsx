@@ -25,7 +25,39 @@ const Animais = (props) => {
         setIsHistoryOpen(!isHistoryOpen);
     }
 
-    const { animais } = props;
+    const animais = props.animais.map((animal) => Animal.NewAnimal(animal));
+    let animaisComGdp = 0;
+
+    const convertToNumber = (value) => {
+        const number = Number(value);
+        if (Number.isNaN(number)) {
+            return 0;
+        }
+
+        return number;
+    };
+
+    const totals = animais.reduce((acc, cur) => {
+        if (cur.gdp ?? 0 != 0) {
+            animaisComGdp++;
+        }
+        return {
+            pesoInicial: acc.pesoInicial + convertToNumber(cur.pesoInicial),
+            pesoFinal: acc.pesoFinal + convertToNumber(cur.pesoFinal),
+            gdp: acc.gdp + convertToNumber(cur.gdp)
+        }
+    }, {
+        pesoInicial: 0,
+        pesoFinal: 0,
+        gdp: 0
+    });
+
+    const average = {
+        pesoInicial: totals.pesoInicial / animaisComGdp,
+        pesoFinal: totals.pesoFinal / animaisComGdp,
+        gdp: totals.gdp / animaisComGdp
+    };
+
     return (
         <Fragment>
             <Table responsive bordered className="align-middle text-center">
@@ -62,8 +94,10 @@ const Animais = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {animais.map((item) => {
-                        const animal = Animal.NewAnimal(item);
+                    {animais.map((animal) => {
+                        const pesoInicialClass = animal.pesoInicial > average.pesoInicial ? "table-success" : animal.pesoInicial < average.pesoInicial ? "table-danger" : "";
+                        const pesoFinalClass = animal.pesoFinal > average.pesoFinal ? "table-success" : animal.pesoFinal < average.pesoFinal ? "table-danger" : "";
+                        const gdpClass = animal.gdp > average.gdp ? "table-success" : animal.gdp < average.gdp ? "table-danger" : "";
                         return (
                             <tr key={animal.key}>
                                 <td><Button color="link" block onClick={() => showHistory(animal.key, animal.registro)}>{animal.registro}</Button></td>
@@ -81,10 +115,10 @@ const Animais = (props) => {
                                     ).format(formatDisplay)}
                                 </td>
                                 <td>{animal.dias}</td>
-                                <td>{animal.pesoInicial}</td>
-                                <td>{animal.pesoFinal}</td>
+                                <td className={pesoInicialClass}>{animal.pesoInicial}</td>
+                                <td className={pesoFinalClass}>{animal.pesoFinal}</td>
                                 <td className="d-none d-print-table-cell" />
-                                <td>{animal.gdp}</td>
+                                <td className={gdpClass}>{animal.gdp}</td>
                                 <td className="d-print-none">
                                     <Button
                                         size="sm"
@@ -101,6 +135,24 @@ const Animais = (props) => {
                         );
                     })}
                 </tbody>
+                <tfoot className="fw-semibold">
+                    <tr>
+                        <td>Média</td>
+                        <td colSpan={3}></td>
+                        <td>{average.pesoInicial}</td>
+                        <td>{average.pesoFinal}</td>
+                        <td className="d-none d-print-table-cell" />
+                        <td>{average.gdp}</td>
+                        <td className="d-print-none"></td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td colSpan={3}></td>
+                        <td>{totals.pesoInicial}</td>
+                        <td>{totals.pesoFinal}</td>
+                        <td colSpan={2}></td>
+                    </tr>
+                </tfoot>
             </Table>
             <HistoryModal isOpen={isHistoryOpen} toggle={historyToggle} animalKey={historyKey} registro={historyRegistro} />
         </Fragment>

@@ -6,4 +6,14 @@
     .row {
         display: block;
     }
+
+    td.table-success {
+        background-color: transparent !important;
+        color: var(--bs-success) !important;
+    }
+
+    td.table-danger {
+        background-color: transparent !important;
+        color: var(--bs-danger) !important;
+    }
 }
