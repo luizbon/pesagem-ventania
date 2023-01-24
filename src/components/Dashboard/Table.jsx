@@ -47,9 +47,9 @@ const Animais = (props) => {
             gdp: acc.gdp + convertToNumber(cur.gdp)
         }
     }, {
-        pesoInicial: 0,
-        pesoFinal: 0,
-        gdp: 0
+        pesoInicial: Number(0),
+        pesoFinal: Number(0),
+        gdp: Number(0)
     });
 
     const average = {
@@ -57,7 +57,7 @@ const Animais = (props) => {
         pesoFinal: totals.pesoFinal / animaisComGdp,
         gdp: totals.gdp / animaisComGdp
     };
-
+    
     return (
         <Fragment>
             <Table responsive bordered className="align-middle text-center">
@@ -95,8 +95,6 @@ const Animais = (props) => {
                 </thead>
                 <tbody>
                     {animais.map((animal) => {
-                        const pesoInicialClass = animal.pesoInicial > average.pesoInicial ? "table-success" : animal.pesoInicial < average.pesoInicial ? "table-danger" : "";
-                        const pesoFinalClass = animal.pesoFinal > average.pesoFinal ? "table-success" : animal.pesoFinal < average.pesoFinal ? "table-danger" : "";
                         const gdpClass = animal.gdp > average.gdp ? "table-success" : animal.gdp < average.gdp ? "table-danger" : "";
                         return (
                             <tr key={animal.key}>
@@ -115,10 +113,16 @@ const Animais = (props) => {
                                     ).format(formatDisplay)}
                                 </td>
                                 <td>{animal.dias}</td>
-                                <td className={pesoInicialClass}>{animal.pesoInicial}</td>
-                                <td className={pesoFinalClass}>{animal.pesoFinal}</td>
+                                <td>{animal.pesoInicial.toLocaleString('pt-BR', {
+                                    maximumFractionDigits: 2
+                                })}</td>
+                                <td>{animal.pesoFinal.toLocaleString('pt-BR', {
+                                    maximumFractionDigits: 2
+                                })}</td>
                                 <td className="d-none d-print-table-cell" />
-                                <td className={gdpClass}>{animal.gdp}</td>
+                                <td className={gdpClass}>{animal.gdp.toLocaleString('pt-BR', {
+                                    maximumFractionDigits: 2
+                                })}</td>
                                 <td className="d-print-none">
                                     <Button
                                         size="sm"
@@ -139,17 +143,27 @@ const Animais = (props) => {
                     <tr>
                         <td>Média</td>
                         <td colSpan={3}></td>
-                        <td>{average.pesoInicial}</td>
-                        <td>{average.pesoFinal}</td>
+                        <td>{average.pesoInicial.toLocaleString('pt-BR', {
+                            maximumFractionDigits: 2
+                        })}</td>
+                        <td>{average.pesoFinal.toLocaleString('pt-BR', {
+                            maximumFractionDigits: 2
+                        })}</td>
                         <td className="d-none d-print-table-cell" />
-                        <td>{average.gdp}</td>
+                        <td>{average.gdp.toLocaleString('pt-BR', {
+                            maximumFractionDigits: 2
+                        })}</td>
                         <td className="d-print-none"></td>
                     </tr>
                     <tr>
                         <td>Total</td>
                         <td colSpan={3}></td>
-                        <td>{totals.pesoInicial}</td>
-                        <td>{totals.pesoFinal}</td>
+                        <td>{totals.pesoInicial.toLocaleString('pt-BR', {
+                            maximumFractionDigits: 2
+                        })}</td>
+                        <td>{totals.pesoFinal.toLocaleString('pt-BR', {
+                            maximumFractionDigits: 2
+                        })}</td>
                         <td colSpan={2}></td>
                     </tr>
                 </tfoot>
