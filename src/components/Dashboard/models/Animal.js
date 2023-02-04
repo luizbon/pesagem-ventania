@@ -21,9 +21,9 @@ export default class Animal {
         const animal = new Animal({});
         animal.key = key;
         animal.registro = registro;
-        animal.pesoFinal = pesoFinal;
+        animal.pesoFinal = pesoFinal ?? 0;
         animal.dataAtual = dataAtual;
-        animal.pesoInicial = pesoInicial;
+        animal.pesoInicial = pesoInicial ?? 0;
         animal.dataAnterior = dataAnterior || null;
         return animal;
     }
@@ -33,6 +33,6 @@ export default class Animal {
     }
 
     get gdp() {
-        return calculaGPD(this.pesoInicial, this.pesoFinal, this.dataAnterior, this.dataAtual);
+        return calculaGPD(this.pesoInicial, this.pesoFinal, this.dataAnterior, this.dataAtual) ?? 0;
     }
 }
