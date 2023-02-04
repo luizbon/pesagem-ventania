@@ -14,6 +14,7 @@ const Dashboard = (props) => {
     let animaisRef = ref(firebase.database, `animais/${props.group.key}`);
 
     useEffect(() => {
+        setAnimais([]);
         onChildAdded(animaisRef, animalRef => {
             setAnimais(previous => [...previous, animalRef.val()].sort(sortAnimais));
         });
