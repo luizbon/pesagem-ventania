@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sentry/react": "^7.36.0",
+    "@sentry/tracing": "^7.36.0",
     "bootstrap": "^5.2.3",
     "firebase": "^9.15.0",
     "moment": "^2.22.2",
