@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./components/App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/print.css";
-import registerServiceWorker from "./registerServiceWorker";
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 
@@ -25,4 +25,4 @@ const root = createRoot(container);
 root.render(
     <App />
 );
-registerServiceWorker();
+serviceWorkerRegistration.register();
