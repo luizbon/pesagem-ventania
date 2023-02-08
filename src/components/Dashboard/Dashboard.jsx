@@ -7,20 +7,40 @@ import { formatDatabase } from "../../shared/constants";
 import { firebase } from "../../firebase";
 import { ref, onValue, set, push, remove, update, onChildAdded, onChildRemoved, onChildChanged } from "firebase/database";
 import Peso from "./models/Peso";
+import { get, set as cacheSet } from "idb-keyval";
 
 const Dashboard = (props) => {
     const [animais, setAnimais] = useState([]);
+    const key = `animais/${props.group.key}`;
 
-    let animaisRef = ref(firebase.database, `animais/${props.group.key}`);
+    let animaisRef = ref(firebase.database, key);
+
+    const loadCachedAnimais = () => {
+        get(key).then(val => {
+            if (val) {
+                setAnimais(val);
+            }
+        });
+    }
 
     useEffect(() => {
         setAnimais([]);
         onChildAdded(animaisRef, animalRef => {
-            setAnimais(previous => [...previous, animalRef.val()].sort(sortAnimais));
+            setAnimais(previous => {
+                const data = [...previous, animalRef.val()].sort(sortAnimais);
+                cacheSet(key, data);
+                return data;
+            });
+
         });
 
         onChildRemoved(animaisRef, animalRef => {
-            setAnimais(previous => previous.filter(item => item.key !== animalRef.key));
+            setAnimais(previous => {
+                const data = previous.filter(item => item.key !== animalRef.key);
+                cacheSet(key, data);
+                return data;
+            });
+
         });
 
         onChildChanged(animaisRef, animalRef => {
@@ -32,8 +52,19 @@ const Dashboard = (props) => {
                     return item;
                 });
                 data.sort(sortAnimais);
+                cacheSet(key, data);
                 return data;
             });
+        });
+
+        const connectedRef = ref(firebase.database, '.info/connected');
+        onValue(connectedRef, snap => {
+            if (snap.val() === true) {
+                setAnimais([]);
+                cacheSet(key, []);
+            } else {
+                loadCachedAnimais();
+            }
         });
     }, [props.group.key]);
 

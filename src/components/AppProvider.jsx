@@ -1,7 +1,8 @@
-import { onValue, ref } from "firebase/database";
+import { onDisconnect, onValue, ref } from "firebase/database";
 import React, { createContext, useEffect, useState } from "react";
 import { firebase } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { get, set } from "idb-keyval";
 export const AppContext = createContext();
 
 const AppProvider = (props) => {
@@ -16,8 +17,25 @@ const AppProvider = (props) => {
     message
   };
 
+  const loadGroupsCache = (key) => {
+    get(key).then(val => {
+      if (val) {
+        setGroups(val);
+      }
+    });
+  }
+
+  const setCacheGroups = (key, value) => {
+    set(key, value);
+    if (value) {
+      setGroups(value);
+    }
+  }
+
   const loadGroups = (user) => {
-    const groupsRef = ref(firebase.database, `groups/${user.uid}`);
+    const key = `groups/${user.uid}`;
+    const groupsRef = ref(firebase.database, key);
+    loadGroupsCache(key);
     onValue(groupsRef, groupsSnapshot => {
       const list = [];
       groupsSnapshot.forEach(group => {
@@ -26,7 +44,7 @@ const AppProvider = (props) => {
           name: group.val().name
         }
       });
-      setGroups(list);
+      setCacheGroups(key, list);
     });
   }
 
