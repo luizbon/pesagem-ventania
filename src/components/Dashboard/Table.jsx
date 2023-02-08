@@ -54,10 +54,10 @@ const Animais = (props) => {
 
     const average = {
         pesoInicial: totals.pesoInicial / animaisComGdp,
-        pesoFinal: totals.pesoFinal / animaisComGdp,
+        pesoFinal: totals.pesoFinal / animais.length,
         gdp: totals.gdp / animaisComGdp
     };
-    
+
     return (
         <Fragment>
             <Table responsive bordered className="align-middle text-center">
