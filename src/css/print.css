@@ -1,6 +1,6 @@
 @media print {
     .container {
-        width: auto;
+        max-width: 100%;
     }
 
     .row {
@@ -15,5 +15,9 @@
     td.table-danger {
         background-color: transparent !important;
         color: var(--bs-danger) !important;
+    }
+
+    .table>tbody>*>td {
+        padding: 0 0.5rem;
     }
 }
