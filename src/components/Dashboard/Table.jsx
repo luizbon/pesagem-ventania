@@ -1,9 +1,10 @@
 import React, { Fragment, useState } from "react";
 import moment from "moment";
 import { Table, Button } from "reactstrap";
-import { formatDisplay, formatDatabase } from "../../shared/constants";
+import { formatDisplay, formatDatabase, formatPrint } from "../../shared/constants";
 import Animal from "./models/Animal";
 import HistoryModal from "./HistoryModal";
+import { formatRegistro } from "../../shared/utils";
 
 const Animais = (props) => {
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -63,6 +64,12 @@ const Animais = (props) => {
             <Table responsive bordered className="align-middle text-center">
                 <thead>
                     <tr>
+                        <th
+                            rowSpan="2"
+                            className="align-middle text-center d-none d-print-table-cell"
+                        >
+                            Ordem
+                        </th>
                         <th rowSpan="2" className="align-middle text-center">
                             Animal
                         </th>
@@ -94,19 +101,35 @@ const Animais = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {animais.map((animal) => {
+                    {animais.map((animal, index) => {
                         const gdpClass = animal.gdp > average.gdp ? "table-success" : animal.gdp < average.gdp ? "table-danger" : "";
                         return (
                             <tr key={animal.key}>
-                                <td><Button color="link" block onClick={() => showHistory(animal.key, animal.registro)}>{animal.registro}</Button></td>
-                                <td>
+                                <td className="align-middle text-center d-none d-print-table-cell"                                >
+                                    {index + 1}
+                                </td>
+                                <td><Button color="link" block onClick={() => showHistory(animal.key, animal.registro)}>{formatRegistro(animal.registro)}</Button></td>
+                                <td className="d-none d-print-table-cell">
+                                    {animal.dataAnterior &&
+                                        moment(
+                                            animal.dataAnterior,
+                                            formatDatabase
+                                        ).format(formatPrint)}
+                                </td>
+                                <td className="d-none d-print-table-cell">
+                                    {moment(
+                                        animal.dataAtual,
+                                        formatDatabase
+                                    ).format(formatPrint)}
+                                </td>
+                                <td className="d-print-none">
                                     {animal.dataAnterior &&
                                         moment(
                                             animal.dataAnterior,
                                             formatDatabase
                                         ).format(formatDisplay)}
                                 </td>
-                                <td>
+                                <td className="d-print-none">
                                     {moment(
                                         animal.dataAtual,
                                         formatDatabase
@@ -142,7 +165,8 @@ const Animais = (props) => {
                 <tfoot className="fw-semibold">
                     <tr>
                         <td>Média</td>
-                        <td colSpan={3}></td>
+                        <td colSpan={4} className="d-none d-print-table-cell"></td>
+                        <td colSpan={3} className="d-print-none"></td>
                         <td>{average.pesoInicial.toLocaleString('pt-BR', {
                             maximumFractionDigits: 2
                         })}</td>
@@ -157,7 +181,8 @@ const Animais = (props) => {
                     </tr>
                     <tr>
                         <td>Total</td>
-                        <td colSpan={3}></td>
+                        <td colSpan={4} className="d-none d-print-table-cell"></td>
+                        <td colSpan={3} className="d-print-none"></td>
                         <td>{totals.pesoInicial.toLocaleString('pt-BR', {
                             maximumFractionDigits: 2
                         })}</td>
