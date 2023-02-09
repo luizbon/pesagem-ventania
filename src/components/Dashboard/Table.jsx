@@ -4,6 +4,7 @@ import { Table, Button } from "reactstrap";
 import { formatDisplay, formatDatabase, formatPrint } from "../../shared/constants";
 import Animal from "./models/Animal";
 import HistoryModal from "./HistoryModal";
+import { formatRegistro } from "../../shared/utils";
 
 const Animais = (props) => {
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -107,7 +108,7 @@ const Animais = (props) => {
                                 <td className="align-middle text-center d-none d-print-table-cell"                                >
                                     {index + 1}
                                 </td>
-                                <td><Button color="link" block onClick={() => showHistory(animal.key, animal.registro)}>{animal.registro}</Button></td>
+                                <td><Button color="link" block onClick={() => showHistory(animal.key, animal.registro)}>{formatRegistro(animal.registro)}</Button></td>
                                 <td className="d-none d-print-table-cell">
                                     {animal.dataAnterior &&
                                         moment(
