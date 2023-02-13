@@ -3,30 +3,14 @@ import moment from "moment";
 import { Table, Button } from "reactstrap";
 import { formatDisplay, formatDatabase, formatPrint } from "../../shared/constants";
 import Animal from "./models/Animal";
-import HistoryModal from "./HistoryModal";
 import { formatRegistro } from "../../shared/utils";
 
 const Animais = (props) => {
-    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-    const [historyKey, setHistoryKey] = useState(null);
-    const [historyRegistro, setHistoryRegistro] = useState(null);
     const deleteAnimal = (key) => {
         props.delete(key);
     }
 
-    const showHistory = (key, registro) => {
-        setHistoryKey(key);
-        setHistoryRegistro(registro);
-        setIsHistoryOpen(true);
-    }
-
-    const historyToggle = () => {
-        setHistoryKey(null);
-        setHistoryRegistro(null);
-        setIsHistoryOpen(!isHistoryOpen);
-    }
-
-    const animais = props.animais.map((animal) => Animal.NewAnimal(animal));
+    const animais = props.animais.map((animal) => Animal.FromFirestore(animal));
     let animaisComGdp = 0;
 
     const convertToNumber = (value) => {
@@ -60,141 +44,138 @@ const Animais = (props) => {
     };
 
     return (
-        <Fragment>
-            <Table responsive bordered className="align-middle text-center">
-                <thead>
-                    <tr>
-                        <th
-                            rowSpan="2"
-                            className="align-middle text-center d-none d-print-table-cell"
-                        >
-                            Ordem
-                        </th>
-                        <th rowSpan="2" className="align-middle text-center">
-                            Animal
-                        </th>
-                        <th colSpan="2" className="text-center">
-                            Data Pesagem
-                        </th>
-                        <th rowSpan="2" className="align-middle text-center">
-                            Dias
-                        </th>
-                        <th colSpan="2" className="text-center">
-                            Pesagem (Kg)
-                        </th>
-                        <th
-                            rowSpan="2"
-                            className="d-none d-print-table-cell align-middle text-center"
-                        >
-                            Pesagem Curral
-                        </th>
-                        <th rowSpan="2" className="align-middle text-center">
-                            GPD
-                        </th>
-                        <th rowSpan="2" className="d-print-none" />
-                    </tr>
-                    <tr>
-                        <th className="text-center">Anterior</th>
-                        <th className="text-center">Atual</th>
-                        <th className="text-center">Inicial</th>
-                        <th className="text-center">Final</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {animais.map((animal, index) => {
-                        const gdpClass = animal.gdp > average.gdp ? "table-success" : animal.gdp < average.gdp ? "table-danger" : "";
-                        return (
-                            <tr key={animal.key}>
-                                <td className="align-middle text-center d-none d-print-table-cell"                                >
-                                    {index + 1}
-                                </td>
-                                <td><Button color="link" block onClick={() => showHistory(animal.key, animal.registro)}>{formatRegistro(animal.registro)}</Button></td>
-                                <td className="d-none d-print-table-cell">
-                                    {animal.dataAnterior &&
-                                        moment(
-                                            animal.dataAnterior,
-                                            formatDatabase
-                                        ).format(formatPrint)}
-                                </td>
-                                <td className="d-none d-print-table-cell">
-                                    {moment(
-                                        animal.dataAtual,
+        <Table responsive bordered className="align-middle text-center">
+            <thead>
+                <tr>
+                    <th
+                        rowSpan="2"
+                        className="align-middle text-center d-none d-print-table-cell"
+                    >
+                        Ordem
+                    </th>
+                    <th rowSpan="2" className="align-middle text-center">
+                        Animal
+                    </th>
+                    <th colSpan="2" className="text-center">
+                        Data Pesagem
+                    </th>
+                    <th rowSpan="2" className="align-middle text-center">
+                        Dias
+                    </th>
+                    <th colSpan="2" className="text-center">
+                        Pesagem (Kg)
+                    </th>
+                    <th
+                        rowSpan="2"
+                        className="d-none d-print-table-cell align-middle text-center"
+                    >
+                        Pesagem Curral
+                    </th>
+                    <th rowSpan="2" className="align-middle text-center">
+                        GPD
+                    </th>
+                    <th rowSpan="2" className="d-print-none" />
+                </tr>
+                <tr>
+                    <th className="text-center">Anterior</th>
+                    <th className="text-center">Atual</th>
+                    <th className="text-center">Inicial</th>
+                    <th className="text-center">Final</th>
+                </tr>
+            </thead>
+            <tbody>
+                {animais.map((animal, index) => {
+                    const gdpClass = animal.gdp > average.gdp ? "table-success" : animal.gdp < average.gdp ? "table-danger" : "";
+                    return (
+                        <tr key={animal.key}>
+                            <td className="align-middle text-center d-none d-print-table-cell"                                >
+                                {index + 1}
+                            </td>
+                            <td><Button color="link" block onClick={() => props.showHistory(animal.key)}>{formatRegistro(animal.registro)}</Button></td>
+                            <td className="d-none d-print-table-cell">
+                                {animal.dataAnterior &&
+                                    moment(
+                                        animal.dataAnterior,
                                         formatDatabase
                                     ).format(formatPrint)}
-                                </td>
-                                <td className="d-print-none">
-                                    {animal.dataAnterior &&
-                                        moment(
-                                            animal.dataAnterior,
-                                            formatDatabase
-                                        ).format(formatDisplay)}
-                                </td>
-                                <td className="d-print-none">
-                                    {moment(
-                                        animal.dataAtual,
+                            </td>
+                            <td className="d-none d-print-table-cell">
+                                {moment(
+                                    animal.dataAtual,
+                                    formatDatabase
+                                ).format(formatPrint)}
+                            </td>
+                            <td className="d-print-none">
+                                {animal.dataAnterior &&
+                                    moment(
+                                        animal.dataAnterior,
                                         formatDatabase
                                     ).format(formatDisplay)}
-                                </td>
-                                <td>{animal.dias}</td>
-                                <td>{animal.pesoInicial.toLocaleString('pt-BR', {
-                                    maximumFractionDigits: 2
-                                })}</td>
-                                <td>{animal.pesoFinal.toLocaleString('pt-BR', {
-                                    maximumFractionDigits: 2
-                                })}</td>
-                                <td className="d-none d-print-table-cell" />
-                                <td className={gdpClass}>{animal.gdp.toLocaleString('pt-BR', {
-                                    maximumFractionDigits: 2
-                                })}</td>
-                                <td className="d-print-none">
-                                    <Button
-                                        size="sm"
-                                        color="danger"
-                                        block
-                                        onClick={() =>
-                                            deleteAnimal(animal.key)
-                                        }
-                                    >
-                                        Apagar
-                                    </Button>
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-                <tfoot className="fw-semibold">
-                    <tr>
-                        <td>Média</td>
-                        <td colSpan={4} className="d-none d-print-table-cell"></td>
-                        <td colSpan={3} className="d-print-none"></td>
-                        <td>{average.pesoInicial.toLocaleString('pt-BR', {
-                            maximumFractionDigits: 2
-                        })}</td>
-                        <td>{average.pesoFinal.toLocaleString('pt-BR', {
-                            maximumFractionDigits: 2
-                        })}</td>
-                        <td className="d-none d-print-table-cell" />
-                        <td>{average.gdp.toLocaleString('pt-BR', {
-                            maximumFractionDigits: 2
-                        })}</td>
-                        <td className="d-print-none"></td>
-                    </tr>
-                    <tr>
-                        <td>Total</td>
-                        <td colSpan={4} className="d-none d-print-table-cell"></td>
-                        <td colSpan={3} className="d-print-none"></td>
-                        <td>{totals.pesoInicial.toLocaleString('pt-BR', {
-                            maximumFractionDigits: 2
-                        })}</td>
-                        <td>{totals.pesoFinal.toLocaleString('pt-BR', {
-                            maximumFractionDigits: 2
-                        })}</td>
-                        <td colSpan={2}></td>
-                    </tr>
-                </tfoot>
-            </Table>
-            <HistoryModal isOpen={isHistoryOpen} toggle={historyToggle} animalKey={historyKey} registro={historyRegistro} />
-        </Fragment>
+                            </td>
+                            <td className="d-print-none">
+                                {moment(
+                                    animal.dataAtual,
+                                    formatDatabase
+                                ).format(formatDisplay)}
+                            </td>
+                            <td>{animal.dias}</td>
+                            <td>{animal.pesoInicial.toLocaleString('pt-BR', {
+                                maximumFractionDigits: 2
+                            })}</td>
+                            <td>{animal.pesoFinal.toLocaleString('pt-BR', {
+                                maximumFractionDigits: 2
+                            })}</td>
+                            <td className="d-none d-print-table-cell" />
+                            <td className={gdpClass}>{animal.gdp.toLocaleString('pt-BR', {
+                                maximumFractionDigits: 2
+                            })}</td>
+                            <td className="d-print-none">
+                                <Button
+                                    size="sm"
+                                    color="danger"
+                                    block
+                                    onClick={() =>
+                                        deleteAnimal(animal.key)
+                                    }
+                                >
+                                    Apagar
+                                </Button>
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+            <tfoot className="fw-semibold">
+                <tr>
+                    <td>Média</td>
+                    <td colSpan={4} className="d-none d-print-table-cell"></td>
+                    <td colSpan={3} className="d-print-none"></td>
+                    <td>{average.pesoInicial.toLocaleString('pt-BR', {
+                        maximumFractionDigits: 2
+                    })}</td>
+                    <td>{average.pesoFinal.toLocaleString('pt-BR', {
+                        maximumFractionDigits: 2
+                    })}</td>
+                    <td className="d-none d-print-table-cell" />
+                    <td>{average.gdp.toLocaleString('pt-BR', {
+                        maximumFractionDigits: 2
+                    })}</td>
+                    <td className="d-print-none"></td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td colSpan={4} className="d-none d-print-table-cell"></td>
+                    <td colSpan={3} className="d-print-none"></td>
+                    <td>{totals.pesoInicial.toLocaleString('pt-BR', {
+                        maximumFractionDigits: 2
+                    })}</td>
+                    <td>{totals.pesoFinal.toLocaleString('pt-BR', {
+                        maximumFractionDigits: 2
+                    })}</td>
+                    <td colSpan={2}></td>
+                </tr>
+            </tfoot>
+        </Table>
     );
 }
 

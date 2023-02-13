@@ -27,7 +27,7 @@ const App = () => {
                   <AppContext.Consumer>
                     {({ state, ...context }) =>
                       state.currentGroup ? (
-                        <Dashboard group={state.currentGroup} />
+                        <Dashboard group={state.currentGroup} user={state.currentUser} />
                       ) : state.currentUser ? (
                         <div className="content">
                           <h1>Selecione um grupo</h1>
