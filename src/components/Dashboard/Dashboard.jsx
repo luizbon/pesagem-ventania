@@ -20,16 +20,6 @@ const Dashboard = (props) => {
             });
             setAnimais(list);
         });
-
-        const connectedRef = ref(firebase.database, '.info/connected');
-        onValue(connectedRef, snap => {
-            if (snap.val() === true) {
-                setAnimais([]);
-                cacheSet(key, []);
-            } else {
-                loadCachedAnimais();
-            }
-        });
     }, [props.group.key]);
 
     const deleteAnimal = (key) => {

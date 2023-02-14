@@ -17,21 +17,6 @@ const AppProvider = (props) => {
     message
   };
 
-  const loadGroupsCache = (key) => {
-    get(key).then(val => {
-      if (val) {
-        setGroups(val);
-      }
-    });
-  }
-
-  const setCacheGroups = (key, value) => {
-    set(key, value);
-    if (value) {
-      setGroups(value);
-    }
-  }
-
   const loadGroups = (user) => {
     if (groupListener) {
       groupListener();
@@ -45,7 +30,7 @@ const AppProvider = (props) => {
           name: group.data().name
         }
       });
-      setCacheGroups(key, list);
+      setGroups(list);
     });
   }
 

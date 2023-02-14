@@ -1,22 +1,19 @@
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { useServiceWorker } from "./useServiceWorker";
 
 const AppUpdate = ({ children }) => {
     const { isUpdateAvailable, updateAssets } = useServiceWorker();
-    const { modal, setModal } = useState(false);
+    const [modal, setModal] = useState(false);
 
     const toggle = () => setModal(!modal);
 
     useEffect(() => {
-        if (setModal) {
-            setModal(isUpdateAvailable);
-        }
-    }, [isUpdateAvailable, setModal]);
+        setModal(isUpdateAvailable);
+    }, [isUpdateAvailable]);
 
     return (
         <Fragment>
-            {children}
             <Modal isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>
                     ATENÇÃO!!
@@ -33,6 +30,7 @@ const AppUpdate = ({ children }) => {
                     </Button>
                 </ModalFooter>
             </Modal>
+            {children}
         </Fragment>
     );
 }
