@@ -1,19 +1,25 @@
-import { equalTo, onValue, orderByChild, orderByValue, push, query, ref, set } from "firebase/database";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Button, Form, FormFeedback, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 import { isEmpty } from "validator";
-import { firebase } from "../firebase";
+import { Groups } from "../shared/database";
 import { AppContext } from "./AppProvider";
 
 const NewGroupModal = (props) => {
     const [grupo, setGrupo] = useState("");
     const [grupoError, setGrupoError] = useState("");
+    const groupInput = useRef(null);
     const { state } = useContext(AppContext);
 
     const handleGrupo = (event) => {
         setGrupo(event.target.value);
         setGrupoError("");
     };
+
+    useEffect(() => {
+        if (groupInput.current && props.isOpen) {
+            groupInput.current.focus();
+        }
+    }, [props.isOpen]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -22,21 +28,13 @@ const NewGroupModal = (props) => {
             setGrupoError("Grupo não pode ser vazio");
             return;
         }
-        const groupsRef = ref(firebase.database, `groups/${state.currentUser.uid}`);
-        const existingGroup = query(groupsRef, orderByChild("name"), equalTo(grupo));
-        return onValue(existingGroup, snapshot => {
-            if (snapshot.exists()) {
+        const groups = new Groups(state.currentUser);
+        return groups.exists(grupo).then((snapshot) => {
+            if (snapshot) {
                 setGrupoError("Grupo já existe");
                 return;
             }
-            const newGroupRef = push(groupsRef);
-            set(newGroupRef, {
-                name: grupo
-            }).then(() => {
-                props.toggle();
-            });
-        }, {
-            onlyOnce: true
+            return groups.add(grupo).then(() => props.toggle());
         });
     };
 
@@ -49,7 +47,7 @@ const NewGroupModal = (props) => {
                         <Label for="groupName">
                             Grupo
                         </Label>
-                        <Input id="groupName" name="groupName" placeholder="Grupo" invalid={!isEmpty(grupoError)} onChange={handleGrupo} />
+                        <Input id="groupName" name="groupName" placeholder="Grupo" invalid={!isEmpty(grupoError)} onChange={handleGrupo} ref={groupInput} />
                         {!isEmpty(grupoError) && <FormFeedback>{grupoError}</FormFeedback>}
                     </FormGroup>
                 </Form>

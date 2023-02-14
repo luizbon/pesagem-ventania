@@ -48,6 +48,9 @@ export const calculaGPD = (pesoInicial, pesoFinal, dataInicial, dataFinal) => {
 const registroRegex = /([a-zA-Z]+)(\d+)/i;
 
 export const formatRegistro = (registro) => {
+  if (!registro) {
+    return registro;
+  }
   return registro.replace(registroRegex, (_, codigo, numero) => {
     return codigo.toUpperCase() + numero.padStart(4, '0');
   });
