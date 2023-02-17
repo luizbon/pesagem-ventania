@@ -10,6 +10,9 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://cra.link/PWA
 
+let inactive = false;
+let timeout = false;
+
 const isLocalhost = Boolean(
     window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
@@ -47,6 +50,10 @@ export function register(config) {
             } else {
                 // Is not localhost. Just register service worker
                 registerValidSW(swUrl, config);
+                setInterval(() => {
+                    timeout = true;
+                    reload();
+                }, 24 * 60 * 60 * 1000);
             }
         });
     }
@@ -96,20 +103,6 @@ function registerValidSW(swUrl, config) {
                     }
                 };
             };
-
-            if ('periodicSync' in registration) {
-                registration.periodicSync.register('check-for-updates', {
-                    minInterval: 30 * 1000
-                }).catch(err => {
-                    console.log('could not register periodic sync', err);
-                });
-
-                navigator.serviceWorker.addEventListener('periodicSync', event => {
-                    if (event.tag === 'check-for-updates') {
-                        event.waitUntil(registerValidSW(swUrl, config));
-                    }
-                });
-            }
         })
         .catch((error) => {
             console.error('Error during service worker registration:', error);
@@ -148,9 +141,6 @@ export function unregister() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready
             .then((registration) => {
-                if ('periodicSync' in registration) {
-                    registration.periodicSync.unregister('check-for-updates');
-                }
                 registration.unregister();
             })
             .catch((error) => {
@@ -158,3 +148,21 @@ export function unregister() {
             });
     }
 }
+
+function reload() {
+    if (inactive && timeout) {
+        window.location.reload();
+    }
+}
+
+let time;
+function resetTimer() {
+    clearTimeout(time);
+    time = setTimeout(() => {
+        inactive = true;
+        reload();
+    }, 60 * 60 * 1000)
+}
+
+document.onmousemove = resetTimer;
+document.onkeydown = resetTimer;
